@@ -56,7 +56,7 @@ document.addEventListener('click', e => {
 authEl().addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
 
 (async function boot() {
-  if (window.Capacitor) document.body.classList.add('cap');
+  if (window.Capacitor) document.body.classList.add('native');
   if ('serviceWorker' in navigator && !window.Capacitor && /^https?:$/.test(location.protocol) && location.hostname !== 'localhost')
     navigator.serviceWorker.register('sw.js').catch(() => {});
   if (!Cloud.on()) {

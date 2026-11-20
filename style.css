@@ -300,8 +300,8 @@ body{-webkit-user-select:none;user-select:none}
 .tab{flex-direction:column;gap:1px;padding:7px 0 6px;font:700 10px var(--body);border-radius:12px}
 .tab i{font-size:19px}
 .tab.on i{filter:none;opacity:1}
-body.cap .top{padding-top:max(calc(12px + env(safe-area-inset-top)),36px)}
-body.cap .tabs{padding-bottom:max(calc(6px + env(safe-area-inset-bottom)),16px)}
+body.native .top{padding-top:max(calc(12px + env(safe-area-inset-top)),36px)}
+body.native .tabs{padding-bottom:max(calc(6px + env(safe-area-inset-bottom)),16px)}
 .up .btn:disabled{opacity:.45}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 12px}
 .stats div{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:12px;padding:9px 4px;text-align:center;min-width:0}
