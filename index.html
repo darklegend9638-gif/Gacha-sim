@@ -444,6 +444,39 @@ h2{font:900 24px/1.15 var(--disp);letter-spacing:-.03em;margin:8px 0 14px}
 .ic-b.on{background:rgba(138,99,255,.35);border-color:#a469ff;box-shadow:0 0 12px #a469ff88}
 .own{display:inline-block;font:800 10px var(--disp);color:#ffd877;background:rgba(255,196,71,.15);border:1px solid rgba(255,196,71,.5);border-radius:99px;padding:2px 7px;vertical-align:middle;margin-left:4px}
 .sheet .up{background:none;border:0;box-shadow:none;padding:0;margin:0}
+
+/* ===== настройки на весь экран + иконки + админка ===== */
+.sheetwrap{align-items:stretch;justify-content:center;background:var(--bg);backdrop-filter:none}
+.sheet{max-width:480px;width:100%;height:100dvh;max-height:none;border:0;border-radius:0;
+  padding:calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));transform:translateY(24px)}
+body.native .sheet{padding-top:max(calc(16px + env(safe-area-inset-top)),40px)}
+.icons{grid-template-columns:repeat(auto-fill,minmax(38px,1fr))!important;width:100%}
+.ic-b{min-width:0;padding:0;font-size:20px}
+.up{min-width:0;max-width:100%}
+#view{overflow-x:hidden}
+#admin{position:fixed;inset:0;z-index:70;background:var(--bg);display:none;flex-direction:column;align-items:center;
+  padding:calc(14px + env(safe-area-inset-top)) 14px calc(14px + env(safe-area-inset-bottom))}
+body.native #admin{padding-top:max(calc(14px + env(safe-area-inset-top)),40px)}
+#admin.on{display:flex}
+.abox{width:100%;max-width:480px;flex:1;min-height:0;display:flex;flex-direction:column}
+.ahead{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.ahead h2{margin:0;font-size:22px;flex:1}
+.aback{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--text);font-size:20px}
+#alist{flex:1;overflow-y:auto;margin-top:10px;padding-bottom:12px}
+.arow{background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px}
+.arow.ban{border-color:rgba(255,100,120,.5)}
+.arow .t{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.arow .t b{font:700 15px var(--disp);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.arow small{color:var(--muted);display:block;margin:2px 0 8px;word-break:break-word}
+.abtns{display:flex;gap:6px}
+.abtn{flex:1;min-width:0;padding:9px 6px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--text);font:700 12.5px var(--disp)}
+.abtn.red{color:#ff8a9a;border-color:rgba(255,100,120,.4)}
+.adlg{position:fixed;inset:0;z-index:90;background:rgba(6,4,18,.7);display:flex;align-items:center;justify-content:center;padding:20px}
+.adbox{width:100%;max-width:360px;background:var(--bg2);border:1px solid var(--line);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.adbox b{font:800 16px var(--disp)}
+.adbox .row{display:flex;gap:8px}
+.alog{font-size:12.5px;padding:8px 0;border-bottom:1px solid var(--line);color:var(--muted)}
+.alog b{color:var(--text)}
 </style>
 </head>
 <body>
@@ -479,6 +512,7 @@ h2{font:900 24px/1.15 var(--disp);letter-spacing:-.03em;margin:8px 0 14px}
   </div>
 </div>
 <div id="settings" class="sheetwrap"><div class="sheet"><div class="shead"><h2>Настройки</h2><button class="btn sm" data-close-settings>Готово</button></div><div class="sbody"></div></div></div>
+<div id="admin"></div>
 <div id="toast"></div>
 <script>
 // Подключение к базе Supabase.
@@ -658,10 +692,11 @@ const Sfx = (() => {
 })();
 
 /* ===== Настройки (внутри профиля) ===== */
+var ADM = '';
 const sw = (k, on) => `<button class="sw ${on ? 'on' : ''}" role="switch" aria-checked="${on}" data-set="${k}"><i></i></button>`;
 function settingsHTML() {
   const s = Settings.get();
-  return `<div class="up sets">
+  return `${ADM ? '<button class="btn main" data-adm="open" style="justify-content:center;margin-bottom:12px">🛡 Админ-панель</button>' : ''}<div class="up sets">
       <div class="srow"><b>Музыка</b>${sw('music', s.music)}</div>
       <label class="slide ${s.music ? '' : 'dis'}"><span>Громкость музыки</span><input type="range" min="0" max="100" value="${Math.round(s.mvol * 100)}" data-vol="mvol"></label>
       <div class="rchips sty">${Object.entries(Sfx.STYLES).map(([k, v]) => `<button class="rchip ${s.style === k ? 'on' : ''}" style="--c:#8a63ff" data-style="${k}">${v.name}</button>`).join('')}</div>
@@ -1066,7 +1101,7 @@ function vBonus() {
 const ICONS = ['😀','😎','🤩','🥳','😈','👻','🤖','👽','🐱','🐶','🦊','🐼','🐸','🦄','🐲','🦁','🐯','🐵','🦉','🐙','🔥','⚡','🌈','🍀','💎','👑','⭐','🌙','🚀','🎮','🎲','🍕'];
 const myIcon = () => (S && S.icon) || (() => { try { return localStorage.getItem('gachaup_icon_' + (S && S.username)) || ''; } catch (e) { return ''; } })();
 const OWN = '👑';
-const badge = o => o ? ' <span class="own">' + OWN + ' владелец</span>' : '';
+const badge = o => (o || ADM === 'owner') ? ' <span class="own">' + OWN + ' владелец</span>' : ADM === 'admin' ? ' <span class="own">🛡 админ</span>' : '';
 async function setIcon(ic) {
   try { localStorage.setItem('gachaup_icon_' + S.username, ic); } catch (e) {}
   S.icon = ic; setAvatar(S.name);
@@ -1169,6 +1204,81 @@ document.addEventListener('click', async e => {
 
 </script>
 <script>
+/* ===== Админ-панель (доступна только admin / owner; права проверяет база) ===== */
+const AD = { q: '', tab: 'u', seq: 0, t: 0 };
+async function loadRole() {
+  try { const r = await Cloud.rpc('adm_role', {}); ADM = (typeof r === 'string' && r !== 'user') ? r : ''; } catch (e) { ADM = ''; }
+  if (S) render();
+}
+function ask(title, ph, kind) {
+  return new Promise(res => {
+    const d = document.createElement('div'); d.className = 'adlg';
+    d.innerHTML = `<div class="adbox"><b>${esc(title)}</b>${kind === 'confirm' ? '' : `<input class="inp" ${kind === 'num' ? 'inputmode="numeric"' : ''} placeholder="${esc(ph || '')}" maxlength="60">`}
+      <div class="row"><button class="abtn" data-x="0">Отмена</button><button class="abtn" data-x="1" style="background:linear-gradient(135deg,#5b6cff,#8a63ff)">ОК</button></div></div>`;
+    document.body.appendChild(d);
+    const inp = d.querySelector('input'); if (inp) setTimeout(() => inp.focus(), 60);
+    const done = v => { d.remove(); res(v); };
+    d.addEventListener('click', e => { const b = e.target.closest('[data-x]'); if (b) done(b.dataset.x === '1' ? (inp ? inp.value.trim() : '1') : null); else if (e.target === d) done(null); });
+    if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') done(inp.value.trim()); });
+  });
+}
+function admOpen() {
+  const a = $('#admin'); AD.tab = 'u'; AD.q = '';
+  a.innerHTML = `<div class="abox"><div class="ahead"><button class="aback" data-adm="close">←</button><h2>Админ-панель</h2><span class="own">${ADM === 'owner' ? '👑 владелец' : '🛡 админ'}</span></div>
+    <div class="rchips"><button class="rchip on" style="--c:#8a63ff" data-adm="tab" data-t="u">Игроки</button><button class="rchip" style="--c:#8a63ff" data-adm="tab" data-t="l">Журнал</button></div>
+    <input class="inp" id="aq" placeholder="Поиск по логину" style="margin-top:10px"><div id="alist"></div></div>`;
+  a.classList.add('on'); $('#settings').classList.remove('on'); admLoad();
+}
+async function admLoad() {
+  const my = ++AD.seq, box = $('#alist'); box.innerHTML = '<p class="muted">Загрузка…</p>';
+  try {
+    if (AD.tab === 'u') {
+      const rows = await Cloud.rpc('adm_users', { p_q: AD.q }); if (my !== AD.seq) return;
+      box.innerHTML = rows.length ? rows.map(admRow).join('') : '<p class="muted">Никого не найдено</p>';
+    } else {
+      const rows = await Cloud.rpc('adm_logs', {}); if (my !== AD.seq) return;
+      box.innerHTML = rows.length ? rows.map(l => `<div class="alog"><b>${esc(l.actor || '?')}</b> · ${esc(l.act)} · ${esc(l.target || '')} ${esc(l.info || '')}<br>${new Date(l.at).toLocaleString('ru-RU')}</div>`).join('') : '<p class="muted">Пока пусто</p>';
+    }
+  } catch (e) { if (my === AD.seq) box.innerHTML = `<p class="muted">${esc(e.message)}</p>`; }
+}
+function admRow(u) {
+  const role = u.role || 'user', self = u.username === S.username, id = esc(u.id);
+  const canBan = role !== 'owner' && !self && (ADM === 'owner' || role !== 'admin');
+  const canRole = ADM === 'owner' && role !== 'owner' && !self;
+  const tag = role === 'owner' ? ' 👑' : role === 'admin' ? ' 🛡' : '';
+  return `<div class="arow ${u.banned ? 'ban' : ''}"><div class="t"><b>${u.icon ? esc(u.icon) + ' ' : ''}${esc(u.name || u.username)}${tag}${u.banned ? ' 🚫' : ''}</b><span>${fmt(u.coins || 0)} ${COIN}</span></div>
+    <small>@${esc(u.username)}${u.banned && u.ban_reason ? ' · бан: ' + esc(u.ban_reason) : ''}</small>
+    <div class="abtns"><button class="abtn" data-adm="coins" data-id="${id}">＋ Монеты</button>
+    ${canBan ? `<button class="abtn red" data-adm="ban" data-id="${id}" data-b="${u.banned ? 0 : 1}">${u.banned ? 'Разбан' : 'Бан'}</button>` : ''}
+    ${canRole ? `<button class="abtn" data-adm="role" data-id="${id}" data-r="${role === 'admin' ? 'user' : 'admin'}">${role === 'admin' ? 'Снять админа' : 'Сделать админом'}</button>` : ''}</div></div>`;
+}
+document.addEventListener('click', async e => {
+  const t = e.target.closest('[data-adm]'); if (!t) return;
+  const a = t.dataset.adm;
+  try {
+    if (a === 'open') admOpen();
+    else if (a === 'close') $('#admin').classList.remove('on');
+    else if (a === 'tab') { AD.tab = t.dataset.t; document.querySelectorAll('[data-adm=tab]').forEach(b => b.classList.toggle('on', b === t)); $('#aq').style.display = AD.tab === 'u' ? '' : 'none'; admLoad(); }
+    else if (a === 'coins') {
+      const v = await ask('Выдать монеты (можно с минусом)', 'например 5000', 'num'); if (v === null) return;
+      const n = parseInt(v, 10); if (!n) return toast('Введите число');
+      await Cloud.rpc('adm_coins', { p_target: t.dataset.id, p_amount: n });
+      toast('Готово'); admLoad(); const j = await Game.api('state'); if (j.state) setState(j.state);
+    }
+    else if (a === 'ban') {
+      const on = t.dataset.b === '1', why = on ? await ask('Причина бана', 'необязательно', 'text') : await ask('Снять бан?', '', 'confirm');
+      if (why === null) return;
+      await Cloud.rpc('adm_ban', { p_target: t.dataset.id, p_ban: on, p_reason: on ? why : '' }); toast(on ? 'Забанен' : 'Разбанен'); admLoad();
+    }
+    else if (a === 'role') {
+      if (await ask(t.dataset.r === 'admin' ? 'Выдать права админа?' : 'Снять права админа?', '', 'confirm') === null) return;
+      await Cloud.rpc('adm_role_set', { p_target: t.dataset.id, p_role: t.dataset.r }); toast('Готово'); admLoad();
+    }
+  } catch (er) { toast(er.message); }
+});
+document.addEventListener('input', e => { if (e.target.id !== 'aq') return; AD.q = e.target.value.trim(); clearTimeout(AD.t); AD.t = setTimeout(admLoad, 300); });
+</script>
+<script>
 /* ===== Обязательная регистрация / вход и запуск приложения ===== */
 let AUTH_MODE = 'login', authBusy = false;
 const authEl = () => $('#auth');
@@ -1194,10 +1304,10 @@ function enterGame(j) {
   CONF = j.conf; TAB = 'summon'; COL = 0;
   setState(j.state); setAvatar(j.state.name);
   authEl().classList.remove('on');
-  render();
+  render(); loadRole();
 }
 async function doLogout() {
-  await Game.logout();
+  await Game.logout(); ADM = ''; $('#admin').classList.remove('on');
   AUTH_MODE = 'login'; $('#au').value = '';
   showAuth();
 }
