@@ -16,7 +16,7 @@ const Cloud = (() => {
     try {
       r = await fetch(base() + '/rpc/' + fn, {
         method: 'POST',
-        headers: { apikey: CLOUD.key, Authorization: 'Bearer ' + CLOUD.key, 'Content-Type': 'application/json' },
+        headers: Object.assign({ apikey: CLOUD.key, 'Content-Type': 'application/json' }, /^eyJ/.test(CLOUD.key) ? { Authorization: 'Bearer ' + CLOUD.key } : {}),
         body: JSON.stringify(body)
       });
     } catch (e) { throw new Error('Нет связи с сервером. Проверьте интернет.'); }
