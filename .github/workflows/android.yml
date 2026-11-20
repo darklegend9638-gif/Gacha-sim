@@ -8,6 +8,9 @@ on:
 permissions:
   contents: write
 
+env:
+  VERSION_BASE: "1.0"   # 1.0.<номер сборки>: 1.0.1, 1.0.2, 1.0.3 ... Для 1.1.x поменяйте на "1.1"
+
 jobs:
   apk:
     runs-on: ubuntu-latest
@@ -23,11 +26,17 @@ jobs:
           distribution: temurin
           java-version: 21
 
+      - name: Версия приложения
+        run: |
+          echo "APP_VERSION=${VERSION_BASE}.${{ github.run_number }}" >> $GITHUB_ENV
+          echo "VERSION_CODE=${{ github.run_number }}" >> $GITHUB_ENV
+
       - name: Подготовка проекта (файлы игры лежат в корне)
         run: |
           mkdir www
           cp index.html manifest.webmanifest icon-192.png icon-512.png www/
           rm -f www/sw.js
+          sed -i "s#__APP_VERSION__#${APP_VERSION}#; s#__APP_REPO__#${{ github.repository }}#" www/index.html
           sed -i "s#<link rel=\"manifest\" href=\"manifest.webmanifest\">##" www/index.html
           npm init -y > /dev/null
           npm install --no-audit --no-fund @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7
@@ -52,12 +61,25 @@ jobs:
               r.save(d + '/ic_launcher.png')
               r.save(d + '/ic_launcher_round.png')
           PY
+          sed -i "s/versionCode [0-9]*/versionCode ${VERSION_CODE}/; s/versionName \"[^\"]*\"/versionName \"${APP_VERSION}\"/" android/app/build.gradle
           sed -i '/android.permission.INTERNET/a\    <uses-permission android:name="android.permission.VIBRATE" />' android/app/src/main/AndroidManifest.xml
 
-      - name: Постоянный ключ подписи (обновления ставятся поверх)
+      - name: Ключ подписи (из секретов, иначе debug.keystore из репозитория)
+        env:
+          KS_B64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
-          mkdir -p ~/.android
-          cp debug.keystore ~/.android/debug.keystore
+          if [ -n "$KS_B64" ]; then
+            echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+            echo "KS_ALIAS=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
+            echo "KS_PASS=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+            echo "KEY_PASS=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
+          else
+            cp debug.keystore "$RUNNER_TEMP/release.keystore"
+            echo "KS_ALIAS=androiddebugkey" >> $GITHUB_ENV
+            echo "KS_PASS=android" >> $GITHUB_ENV
+            echo "KEY_PASS=android" >> $GITHUB_ENV
+          fi
+          echo "KS_FILE=$RUNNER_TEMP/release.keystore" >> $GITHUB_ENV
 
       - name: Копирование игры в проект
         run: npx cap sync android
@@ -67,13 +89,18 @@ jobs:
         run: |
           chmod +x gradlew
           for i in 1 2 3; do
-            ./gradlew assembleDebug --no-daemon --refresh-dependencies && break
+            ./gradlew assembleRelease --no-daemon --refresh-dependencies && break
             echo "Попытка $i не удалась, повтор через 30 с"; sleep 30
           done
-          test -f app/build/outputs/apk/debug/app-debug.apk
+          ls app/build/outputs/apk/release/
 
-      - name: Переименование
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk GachaUP.apk
+      - name: Подпись APK
+        run: |
+          BT=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -1)
+          UNSIGNED=$(ls android/app/build/outputs/apk/release/*.apk | head -1)
+          $BT/zipalign -f -p 4 "$UNSIGNED" aligned.apk
+          $BT/apksigner sign --ks "$KS_FILE" --ks-key-alias "$KS_ALIAS" --ks-pass "pass:$KS_PASS" --key-pass "pass:$KEY_PASS" --out GachaUP.apk aligned.apk
+          $BT/apksigner verify --print-certs GachaUP.apk | head -3
 
       - uses: actions/upload-artifact@v4
         with:
@@ -83,7 +110,8 @@ jobs:
       - name: Выложить в Releases
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: build-${{ github.run_number }}
-          name: GachaUP, сборка ${{ github.run_number }}
-          body: Скачайте GachaUP.apk, откройте на телефоне и установите.
+          tag_name: v${{ env.APP_VERSION }}
+          name: GachaUP ${{ env.APP_VERSION }}
+          make_latest: true
+          body: Скачайте GachaUP.apk и установите поверх старой версии.
           files: GachaUP.apk
