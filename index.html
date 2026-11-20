@@ -1112,7 +1112,7 @@ function vMe() {
     <div class="inrow"><input class="inp" id="nm" maxlength="16" value="${esc(S.name)}" placeholder="Ваше имя"><button class="btn sm" data-act="rename">Сохранить</button></div></div>
   <h2 style="font-size:20px">Последние крутки</h2><div id="hist">${hist}</div>
   <h2 style="font-size:20px;margin-top:18px">Аккаунт</h2>
-  <div class="up"><p>@${esc(S.username)} · v${APP_VERSION}</p>
+  <div class="up"><p>@${esc(S.username)} · ID ${S.pid} · v${APP_VERSION}</p>
     <button class="btn sm" data-act="logout" style="width:100%;justify-content:center">Выйти из аккаунта</button></div>
   <button class="btn sm danger" data-act="reset" style="margin:6px 0 10px">${resetArm ? 'Нажмите ещё раз — всё удалится' : 'Сбросить прогресс'}</button>`;
 }
@@ -1214,7 +1214,7 @@ function admOpen() {
   const a = $('#admin'); AD.tab = 'u'; AD.q = '';
   a.innerHTML = `<div class="abox"><div class="ahead"><button class="aback" data-adm="close">←</button><h2>Админ-панель</h2><span class="own">${ADM === 'owner' ? '👑 владелец' : '🛡 админ'}</span></div>
     <div class="rchips"><button class="rchip on" style="--c:#8a63ff" data-adm="tab" data-t="u">Игроки</button><button class="rchip" style="--c:#8a63ff" data-adm="tab" data-t="l">Журнал</button></div>
-    <input class="inp" id="aq" placeholder="Поиск по логину" style="margin-top:10px"><div id="alist"></div></div>`;
+    <input class="inp" id="aq" placeholder="Поиск по логину или ID" style="margin-top:10px"><div id="alist"></div></div>`;
   a.classList.add('on'); $('#settings').classList.remove('on'); admLoad();
 }
 async function admLoad() {
@@ -1235,7 +1235,7 @@ function admRow(u) {
   const canRole = ADM === 'owner' && role !== 'owner' && !self;
   const tag = role === 'owner' ? ' 👑' : role === 'admin' ? ' 🛡' : '';
   return `<div class="arow ${u.banned ? 'ban' : ''}"><div class="t"><b>${u.icon ? esc(u.icon) + ' ' : ''}${esc(u.name || u.username)}${tag}${u.banned ? ' 🚫' : ''}</b><span>${fmt(u.coins || 0)} ${COIN}</span></div>
-    <small>@${esc(u.username)}${u.banned && u.ban_reason ? ' · бан: ' + esc(u.ban_reason) : ''}</small>
+    <small>@${esc(u.username)} · ID ${esc(u.pid)}${u.banned && u.ban_reason ? ' · бан: ' + esc(u.ban_reason) : ''}</small>
     <div class="abtns"><button class="abtn" data-adm="coins" data-id="${id}">＋ Монеты</button>
     ${canBan ? `<button class="abtn red" data-adm="ban" data-id="${id}" data-b="${u.banned ? 0 : 1}">${u.banned ? 'Разбан' : 'Бан'}</button>` : ''}
     ${canRole ? `<button class="abtn" data-adm="role" data-id="${id}" data-r="${role === 'admin' ? 'user' : 'admin'}">${role === 'admin' ? 'Снять админа' : 'Сделать админом'}</button>` : ''}</div></div>`;
