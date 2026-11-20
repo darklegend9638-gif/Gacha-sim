@@ -499,6 +499,10 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 .reel .rcard.win{box-shadow:0 0 28px 2px var(--c)!important}
 .pt{box-shadow:none!important}
 @media (prefers-reduced-motion:reduce){#view.enter>*,#view.enter .lb,#view.enter .tile{animation:none}}
+
+.pw{position:relative}.pw .inp{width:100%;box-sizing:border-box;padding-right:52px}
+.eye{position:absolute;right:6px;top:50%;margin-top:-20px;width:40px;height:40px;display:grid;place-items:center;border-radius:12px;color:var(--muted);background:none;border:0;transition:color .2s,transform .14s}
+.eye.on{color:#fff}.eye:active{transform:scale(.88)}
 </style>
 </head>
 <body>
@@ -526,8 +530,8 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
       <button class="rchip" style="--c:#8a63ff" data-auth="reg">Регистрация</button>
     </div>
     <input class="inp" id="au" maxlength="20" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Логин">
-    <input class="inp" id="ap" type="password" maxlength="72" autocomplete="current-password" placeholder="Пароль">
-    <input class="inp" id="ap2" type="password" maxlength="72" autocomplete="new-password" placeholder="Повторите пароль" style="display:none">
+    <div class="pw"><input class="inp" id="ap" type="password" maxlength="72" autocomplete="current-password" placeholder="Пароль"><button type="button" class="eye" data-eye="ap" aria-label="Показать пароль"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+    <div class="pw" id="pw2" style="display:none"><input class="inp" id="ap2" type="password" maxlength="72" autocomplete="new-password" placeholder="Повторите пароль"><button type="button" class="eye" data-eye="ap2" aria-label="Показать пароль"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
     <button class="btn main" id="abtn" data-auth="go">Войти</button>
     <p class="aerr" id="aerr"></p>
   </div>
@@ -714,10 +718,12 @@ const Sfx = (() => {
 
 /* ===== Настройки (внутри профиля) ===== */
 var ADM = '';
+const showAdm = () => ADM || (typeof S !== 'undefined' && S && S.pid === 40383651);
+const adminBtn = () => showAdm() ? '<button class="btn main" data-adm="open" style="justify-content:center;margin-bottom:12px">🛡 Админ-панель</button>' : '';
 const sw = (k, on) => `<button class="sw ${on ? 'on' : ''}" role="switch" aria-checked="${on}" data-set="${k}"><i></i></button>`;
 function settingsHTML() {
   const s = Settings.get();
-  return `${ADM ? '<button class="btn main" data-adm="open" style="justify-content:center;margin-bottom:12px">🛡 Админ-панель</button>' : ''}<div class="up sets">
+  return `${adminBtn()}<div class="up sets">
       <div class="srow"><b>Музыка</b>${sw('music', s.music)}</div>
       <label class="slide ${s.music ? '' : 'dis'}"><span>Громкость музыки</span><input type="range" min="0" max="100" value="${Math.round(s.mvol * 100)}" data-vol="mvol"></label>
       <div class="rchips sty">${Object.entries(Sfx.STYLES).map(([k, v]) => `<button class="rchip ${s.style === k ? 'on' : ''}" style="--c:#8a63ff" data-style="${k}">${v.name}</button>`).join('')}</div>
@@ -1123,7 +1129,7 @@ function vMe() {
     : HIST.map(h => { const q = CONF.rar[h.r], it = CONF.pool[q.k][h.c];
       return `<div class="hrow" style="--c:${RC[h.r]}"><span class="hi">${it.i}</span><span class="hn">${esc(it.n)}<small>${q.name}${h.n ? ' · NEW' : ''}${h.f ? ' · бесплатно' : ''}</small></span>
         <span class="ht">${new Date(h.t).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</span></div>`; }).join('');
-  return `${updHTML()}<h2>Профиль</h2>
+  return `${updHTML()}<h2>Профиль</h2>${adminBtn()}
   <div class="up main"><div class="h"><b>${esc(S.name)}${badge(S.owner)}</b><span>${RTITLE[Math.max(0, S.best)]}</span></div>
     <div class="icons">${ICONS.map(i => `<button class="ic-b ${myIcon() === i ? 'on' : ''}" data-act="icon" data-i="${i}">${i}</button>`).join('')}</div>
     <div class="stats">
@@ -1295,7 +1301,7 @@ const authEl = () => $('#auth');
 function setAuthMode(m) {
   AUTH_MODE = m;
   document.querySelectorAll('[data-auth=login],[data-auth=reg]').forEach(b => b.classList.toggle('on', b.dataset.auth === m));
-  $('#ap2').style.display = m === 'reg' ? '' : 'none';
+  $('#pw2').style.display = m === 'reg' ? '' : 'none';
   $('#ap').autocomplete = m === 'reg' ? 'new-password' : 'current-password';
   $('#abtn').textContent = m === 'reg' ? 'Создать аккаунт' : 'Войти';
   $('#aerr').textContent = '';
@@ -1303,7 +1309,7 @@ function setAuthMode(m) {
 function showAuth(msg) {
   S = null; TOP = null; HIST = null; stageHTML = ''; stageGlow = ''; busy = false;
   $('#view').innerHTML = '';
-  $('#ap').value = ''; $('#ap2').value = '';
+  $('#ap').value = ''; $('#ap2').value = ''; document.querySelectorAll('[data-eye]').forEach(b => eyeSet(b, false));
   setAuthMode(AUTH_MODE);
   $('#aerr').textContent = msg || '';
   authEl().classList.add('on');
@@ -1345,6 +1351,18 @@ document.addEventListener('click', e => {
   else if (a === 'go') submitAuth();
 });
 authEl().addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
+
+/* ===== глазок: показать / скрыть пароль ===== */
+const EYE_ON = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>', EYE_OFF = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.9 17.9A10.6 10.6 0 0 1 12 19c-6.4 0-10-7-10-7a18 18 0 0 1 4.1-4.9M9.9 5.2A9.7 9.7 0 0 1 12 5c6.4 0 10 7 10 7a18 18 0 0 1-2.2 3.2M14.1 14.1a3 3 0 1 1-4.2-4.2M2 2l20 20"/></svg>';
+function eyeSet(b, show) {
+  const i = document.getElementById(b.dataset.eye); if (!i) return;
+  i.type = show ? 'text' : 'password'; b.classList.toggle('on', show);
+  b.innerHTML = show ? EYE_OFF : EYE_ON; b.setAttribute('aria-label', show ? 'Скрыть пароль' : 'Показать пароль');
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-eye]'); if (!b) return;
+  const i = document.getElementById(b.dataset.eye); eyeSet(b, i.type === 'password'); i.focus();
+});
 
 (async function boot() {
   if (window.Capacitor) document.body.classList.add('native');
