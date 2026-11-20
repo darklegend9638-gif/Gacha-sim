@@ -1,0 +1,10 @@
+// Офлайн-кэш для веб-версии (GitHub Pages). В APK не используется.
+const V = 'gachaup-v3';
+const FILES = ['./', 'index.html', 'style.css', 'config.js', 'cloud.js', 'game.js', 'app.js', 'extra.js', 'auth.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
+self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(FILES))); self.skipWaiting(); });
+self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x !== V).map(x => caches.delete(x))))); self.clients.claim(); });
+self.addEventListener('fetch', e => {
+  // запросы к базе данных и любые не-GET в кэш не берём
+  if (e.request.method !== 'GET' || new URL(e.request.url).origin !== location.origin) return;
+  e.respondWith(fetch(e.request).then(r => { const c = r.clone(); caches.open(V).then(ch => ch.put(e.request, c)); return r; }).catch(() => caches.match(e.request)));
+});
