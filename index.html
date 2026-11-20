@@ -394,6 +394,50 @@ h2,.logo,.btn.main,.chip b,.prog .t{font-weight:800}
 .sheet .rchip{flex-direction:row;justify-content:center;flex:1;min-width:0;font:700 13px var(--disp);color:var(--muted)}
 .sheet .rchip.on{color:var(--text)}
 
+
+/* ===== новый дизайн ===== */
+:root{--bg:#0e1026;--bg2:#171a3d;--card:#1d2250;--line:rgba(160,170,255,.14);--acc:linear-gradient(135deg,#6b7bff,#a469ff 55%,#ff6fd8)}
+#app{background:radial-gradient(80% 36% at 50% -4%,#3a3fb0 0%,transparent 70%),radial-gradient(60% 30% at 105% 55%,#6a2fa855 0%,transparent 70%),radial-gradient(50% 30% at -5% 85%,#1e5fd355 0%,transparent 70%),#0e1026}
+.logo{background:var(--acc);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:900}.logo b{color:transparent}
+.chip{background:rgba(255,255,255,.07);border:1px solid var(--line);backdrop-filter:blur(8px);box-shadow:0 4px 14px #0004}
+.ava{border:2px solid rgba(255,255,255,.35);box-shadow:0 0 16px #8a63ff88}
+h2{font:900 24px/1.15 var(--disp);letter-spacing:-.03em;margin:8px 0 14px}
+#view{padding:6px 16px 22px}
+.up,.lb,.hrow{background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));border:1px solid var(--line);box-shadow:0 8px 24px #0004,inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(6px)}
+.up{border-radius:20px;padding:16px;margin-bottom:14px}
+.up.main{border-color:rgba(255,196,71,.5);background:linear-gradient(160deg,rgba(255,196,71,.12),rgba(138,99,255,.12) 60%,rgba(255,255,255,.03))}
+.up .h{margin-bottom:10px}.up .h b{font-size:16px;font-weight:800}
+.up .btn,.btn.sm{border-radius:14px}
+.btn{background:linear-gradient(180deg,#2c3380,#222868);border:1px solid rgba(255,255,255,.14);border-bottom:3px solid #12153a;box-shadow:0 4px 12px #0004}
+.btn:active{transform:translateY(2px);border-bottom-width:1px}
+.btn.main{background:var(--acc);border-bottom-color:#4a2a9a;box-shadow:0 6px 20px #8a63ff66}
+.btn.danger{background:rgba(255,122,138,.1);border-color:rgba(255,122,138,.4);border-bottom-width:1px;box-shadow:none}
+.lv{height:9px;background:rgba(0,0,0,.35);box-shadow:inset 0 1px 3px #0008}
+.lv i{background:linear-gradient(90deg,#6b7bff,#ff6fd8,#ffc447);box-shadow:0 0 10px #ff6fd855}
+.tabs{background:rgba(12,14,36,.85);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-top:8px}
+.tab{background:none;border:0;color:#7f87bf;font-weight:800}
+.tab.on{background:rgba(138,120,255,.18);color:#fff;border:1px solid rgba(160,150,255,.35);box-shadow:0 0 18px #6b7bff44}
+.tab.on i{color:#c9b8ff;filter:drop-shadow(0 0 6px #a469ff)}
+.rchip{background:rgba(255,255,255,.05);border-radius:99px;padding:9px 14px}
+.tile{border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.02));box-shadow:0 0 22px -8px var(--c),inset 0 1px 0 rgba(255,255,255,.1)}
+.tile .ic{filter:drop-shadow(0 4px 8px #0008)}
+.stats div{background:rgba(0,0,0,.25);border-radius:14px}
+.stats b{font-size:17px;background:var(--acc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lb{border-radius:16px;padding:12px 14px}
+.lb.me{border-color:rgba(255,196,71,.6);background:linear-gradient(90deg,rgba(255,196,71,.15),rgba(255,255,255,.03))}
+.lb:nth-child(1) .n{font-size:20px}
+.srow{padding:12px 0}.srow b{font-weight:800}
+.sets .rchips.sty{margin:6px 0 4px}.sets .rchip{flex:1;justify-content:center;font:800 13px var(--disp);color:var(--muted)}
+.sets .rchip.on{color:#fff}
+.sets .srow:first-child{padding-top:0}.sets .srow:last-of-type{border-bottom:0}
+.sw{background:#2e3270;box-shadow:inset 0 2px 5px #0006}
+.sw.on{background:var(--acc);box-shadow:0 0 14px #a469ff77}
+.slide input{accent-color:#a469ff}
+.authbox{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:28px;padding:28px 22px;backdrop-filter:blur(10px);box-shadow:0 20px 60px #0008}
+.inp{background:rgba(0,0,0,.3);border-radius:14px;padding:13px 14px}
+#toast{background:rgba(30,34,86,.95);backdrop-filter:blur(8px);border:1px solid var(--line);box-shadow:0 8px 24px #0008}
+.hrow{border-radius:14px}
+.btn.upd{flex-direction:row;justify-content:space-between;margin-bottom:12px;padding:14px 16px}
 </style>
 </head>
 <body>
@@ -401,7 +445,6 @@ h2,.logo,.btn.main,.chip b,.prog .t{font-weight:800}
   <header class="top">
     <div class="logo">Gacha<b>UP</b></div>
     <div class="chip coins"><span><svg class="cn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffcf5c"/><circle cx="12" cy="12" r="6.5" fill="none" stroke="#b8861b" stroke-width="2"/></svg></span><b id="coins">–</b><em id="rate"></em></div>
-    <button class="gear" data-open-settings aria-label="Настройки"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     <div class="ava" id="who"></div>
   </header>
   <main id="view"><div class="center">Загрузка…</div></main>
@@ -417,20 +460,17 @@ h2,.logo,.btn.main,.chip b,.prog .t{font-weight:800}
 <div id="auth" class="auth">
   <div class="authbox">
     <div class="logo">Gacha<b>UP</b></div>
-    <p class="muted" id="authHint">Войдите или создайте аккаунт, чтобы играть. Прогресс хранится в облаке и доступен с любого телефона.</p>
+    <p class="muted" id="authHint">Войдите, чтобы играть</p>
     <div class="rchips">
       <button class="rchip on" style="--c:#8a63ff" data-auth="login">Вход</button>
       <button class="rchip" style="--c:#8a63ff" data-auth="reg">Регистрация</button>
     </div>
-    <input class="inp" id="au" maxlength="20" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Логин (латиница, цифры, _)">
-    <input class="inp" id="ap" type="password" maxlength="72" autocomplete="current-password" placeholder="Пароль (от 6 символов)">
+    <input class="inp" id="au" maxlength="20" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Логин">
+    <input class="inp" id="ap" type="password" maxlength="72" autocomplete="current-password" placeholder="Пароль">
     <input class="inp" id="ap2" type="password" maxlength="72" autocomplete="new-password" placeholder="Повторите пароль" style="display:none">
     <button class="btn main" id="abtn" data-auth="go">Войти</button>
     <p class="aerr" id="aerr"></p>
   </div>
-</div>
-<div id="settings" class="sheetwrap">
-  <div class="sheet"><div class="shead"><h2>Настройки</h2><button class="btn sm" data-close-settings>Готово</button></div><div class="sbody"></div></div>
 </div>
 <div id="toast"></div>
 <script>
@@ -573,7 +613,8 @@ const Sfx = (() => {
   }
   function sched() { const sd = 60 / P().bpm / 4; while (next < ctx.currentTime + .2) { play(step, next); next += sd; step = (step + 1) % 64; } }
   function startMusic() {
-    if (!init() || timer || !Settings.get().music) return;
+    if (!init() || !Settings.get().music) return;
+    if (timer) { if (ctx.state !== 'running') ctx.resume(); return; }
     ctx.resume(); delay.delayTime.value = 60 / P().bpm * .75; applyVol();
     step = 0; next = ctx.currentTime + .08; timer = setInterval(sched, 30);
   }
@@ -609,33 +650,27 @@ const Sfx = (() => {
   };
 })();
 
-/* ===== Окно настроек ===== */
-(() => {
-  const el = document.getElementById('settings');
-  const sw = (k, on) => `<button class="sw ${on ? 'on' : ''}" role="switch" aria-checked="${on}" data-set="${k}"><i></i></button>`;
-  function draw() {
-    const s = Settings.get();
-    el.querySelector('.sbody').innerHTML = `
-      <div class="srow"><div><b>Музыка</b><small>Фоновая мелодия</small></div>${sw('music', s.music)}</div>
+/* ===== Настройки (внутри профиля) ===== */
+const sw = (k, on) => `<button class="sw ${on ? 'on' : ''}" role="switch" aria-checked="${on}" data-set="${k}"><i></i></button>`;
+function settingsHTML() {
+  const s = Settings.get();
+  return `<div class="up sets">
+      <div class="srow"><b>Музыка</b>${sw('music', s.music)}</div>
       <label class="slide ${s.music ? '' : 'dis'}"><span>Громкость музыки</span><input type="range" min="0" max="100" value="${Math.round(s.mvol * 100)}" data-vol="mvol"></label>
-      <div class="sub">Стиль музыки</div>
-      <div class="rchips">${Object.entries(Sfx.STYLES).map(([k, v]) => `<button class="rchip ${s.style === k ? 'on' : ''}" style="--c:#8a63ff" data-style="${k}">${v.name}</button>`).join('')}</div>
-      <div class="srow"><div><b>Звуки</b><small>Клики, крутка, награды</small></div>${sw('sfx', s.sfx)}</div>
+      <div class="rchips sty">${Object.entries(Sfx.STYLES).map(([k, v]) => `<button class="rchip ${s.style === k ? 'on' : ''}" style="--c:#8a63ff" data-style="${k}">${v.name}</button>`).join('')}</div>
+      <div class="srow"><b>Звуки</b>${sw('sfx', s.sfx)}</div>
       <label class="slide ${s.sfx ? '' : 'dis'}"><span>Громкость звуков</span><input type="range" min="0" max="100" value="${Math.round(s.svol * 100)}" data-vol="svol"></label>
-      <div class="srow"><div><b>Вибрация</b><small>Отклик при кручении</small></div>${sw('vib', s.vib)}</div>
-      <button class="btn sm" data-set="reset" style="width:100%;justify-content:center;margin-top:6px">Сбросить настройки</button>`;
-  }
-  const open = () => { draw(); el.classList.add('on'); };
-  const close = () => el.classList.remove('on');
+      <div class="srow"><b>Вибрация</b>${sw('vib', s.vib)}</div>
+      <button class="btn sm" data-set="reset" style="width:100%;justify-content:center;margin-top:10px">Сбросить настройки</button></div>`;
+}
+(() => {
+  const redraw = () => { if (typeof TAB !== 'undefined' && TAB === 'me' && typeof render === 'function') render(); };
   document.addEventListener('click', e => {
-    const t = e.target.closest('[data-open-settings],[data-close-settings],[data-set],[data-style]');
-    if (!t) { if (e.target === el) close(); return; }
-    if (t.hasAttribute('data-open-settings')) return open();
-    if (t.hasAttribute('data-close-settings')) return close();
-    if (t.dataset.style) { Settings.set('style', t.dataset.style); draw(); Sfx.restart(); return; }
+    const t = e.target.closest('[data-set],[data-style]'); if (!t) return;
+    if (t.dataset.style) { Settings.set('style', t.dataset.style); redraw(); Sfx.restart(); return; }
     const k = t.dataset.set;
-    if (k === 'reset') { Object.entries(Settings.def).forEach(([a, b]) => Settings.set(a, b)); Sfx.restart(); Sfx.apply(); draw(); return; }
-    Settings.set(k, !Settings.get()[k]); Sfx.apply(); draw();
+    if (k === 'reset') { Object.entries(Settings.def).forEach(([a, b]) => Settings.set(a, b)); Sfx.restart(); Sfx.apply(); redraw(); return; }
+    Settings.set(k, !Settings.get()[k]); Sfx.apply(); redraw();
     if (k === 'vib' && Settings.get().vib) try { navigator.vibrate && navigator.vibrate(20); } catch (er) {}
   });
   document.addEventListener('input', e => {
@@ -643,9 +678,8 @@ const Sfx = (() => {
     Settings.set(r.dataset.vol, r.value / 100); Sfx.apply();
     if (r.dataset.vol === 'svol') { clearTimeout(r.k); r.k = setTimeout(Sfx.tap, 80); }
   });
-  // звук нажатия на любые кнопки
   document.addEventListener('click', e => {
-    const b = e.target.closest('button'); if (!b || b.closest('#settings .slide')) return;
+    const b = e.target.closest('button'); if (!b || b.closest('.slide')) return;
     b.classList.contains('off') ? Sfx.err() : Sfx.tap();
   });
 })();
@@ -765,7 +799,7 @@ function vSummon() {
   <div class="stage ${stageHTML ? 'static' : ''}" id="stage" data-act="stage" style="${stageGlow ? '--glow:' + stageGlow : ''}">${stageHTML || idleHTML()}</div>
   <div class="pity"><div class="bar"><i style="width:${pity}%"></i></div>
     <span>Гарантированный ${rname(4)}+ через ${left} ${plural(left, 'крутку', 'крутки', 'круток')}</span>
-    <span>${rname(5)}+ через ${fmt(S.pity_m_max - S.pity_m)} · ${rname(6)}+ через ${fmt(S.pity_s_max - S.pity_s)}</span></div>
+    </div>
   <button class="btn free ${S.free_left > 0 ? 'wait' : ''}" data-act="free" id="freeBtn">${freeLabel()}</button>
   <div class="row2">
     <button class="btn ${can1 ? '' : 'off'}" data-act="pull" data-n="1">Крутить ×1<small>${fmt(S.price1)} ${COIN}</small></button>
@@ -809,10 +843,10 @@ function vUp() {
     const ok = u.cost !== null && S.coins >= u.cost, main = u.key === 'luck';
     const btn = u.cost === null ? `<button class="btn off" disabled>Максимум</button>`
       : `<button class="btn ${ok ? '' : 'off'}" data-act="upg" data-k="${u.key}"><span>Улучшить</span><span>${fmt(u.cost)} ${COIN}</span></button>`;
-    return `<div class="up ${main ? 'main' : ''}"><div class="h"><b>${u.name}</b><span>${u.lvl}/${u.max}</span></div><p>${u.desc}</p>
+    return `<div class="up ${main ? 'main' : ''}"><div class="h"><b>${u.name}</b><span>${u.lvl}/${u.max}</span></div>
       <div class="lv"><i style="width:${u.lvl / u.max * 100}%"></i></div>${main ? `<div class="odds">${odds}</div>` : ''}${btn}</div>`;
   });
-  return `<h2>Прокачка</h2><p class="muted" style="margin:-4px 0 12px;font-size:13px">Удача повышает шансы редких существ и покупается за монеты. Зелёные цифры — прирост шанса на следующем уровне.</p>${cards.join('')}`;
+  return `<h2>Прокачка</h2>${cards.join('')}`;
 }
 
 function vTop() {
@@ -836,7 +870,7 @@ setInterval(() => { const b = $('#freeBtn'); if (b && !busy) { b.textContent = f
 async function pull(n, free) {
   if (busy) return;
   if (free && freeAt > Date.now()) return toast('Бесплатная крутка ещё не готова');
-  if (!free && S.coins < (n === 10 ? S.price10 : S.price1)) return toast('Не хватает монет. Монет не хватает: ждите дохода или заберите бонус');
+  if (!free && S.coins < (n === 10 ? S.price10 : S.price1)) return toast('Не хватает монет');
   busy = true;
   let res;
   try { res = await api('pull', free ? { free: true } : { n }); }
@@ -955,7 +989,7 @@ vSummon = function(){
     <div class="hd"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M12 7.5a4.5 4.5 0 0 1 0 9"/></svg></div><h1>Гача-кейс</h1></div>
     <div class="stage ${stageHTML ? 'static' : ''}" id="stage" data-act="stage" style="${stageGlow ? '--glow:' + stageGlow : ''}">${stageHTML || idleReel()}</div>
     <div class="pity"><div class="bar"><i style="width:${pity}%"></i></div>
-      <span>Гарант ${rname(4)}+ через ${left} ${plural(left,'крутку','крутки','круток')}</span></div>
+      <span>Гарант ${rname(4)}+ через ${left}</span></div>
     <button class="btn free ${S.free_left > 0 ? 'wait' : ''}" data-act="free" id="freeBtn">${freeLabel()}</button>
     <div class="row2">
       <button class="btn ${can1 ? '' : 'off'}" data-act="pull" data-n="1">Крутить ×1<small>${fmt(S.price1)} ${COIN}</small></button>
@@ -979,6 +1013,24 @@ function idleReel(){
 
 </script>
 <script>
+/* ===== Версия и проверка обновлений (GitHub Releases) ===== */
+const APP_VERSION = '__APP_VERSION__', APP_REPO = '__APP_REPO__';
+let UPD = null;
+const vnum = v => String(v).replace(/^v/, '').split('.').map(n => parseInt(n, 10) || 0);
+const vnew = (a, b) => { const x = vnum(a), y = vnum(b); for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); } return false; };
+async function checkUpdate() {
+  if (!/^\d/.test(APP_VERSION) || !/\//.test(APP_REPO)) return;
+  try {
+    const r = await fetch('https://api.github.com/repos/' + APP_REPO + '/releases/latest'); if (!r.ok) return;
+    const j = await r.json(), a = (j.assets || []).find(x => /\.apk$/i.test(x.name));
+    if (a && vnew(j.tag_name, APP_VERSION)) { UPD = { v: String(j.tag_name).replace(/^v/, ''), url: a.browser_download_url }; if (typeof TAB !== 'undefined' && S) render(); }
+  } catch (e) {}
+}
+const updHTML = () => UPD ? `<button class="btn main upd" data-act="update"><span>Доступна версия ${UPD.v}</span><span>Обновить</span></button>` : '';
+document.addEventListener('click', e => { const t = e.target.closest('[data-act=update]'); if (t && UPD) window.open(UPD.url, '_blank'); });
+setTimeout(checkUpdate, 2500); setInterval(checkUpdate, 6 * 3600 * 1000);
+</script>
+<script>
 /* ===== Новые экраны для телефона: Бонусы и Профиль + запуск ===== */
 let HIST = null, resetArm = false, RANK = { b: 'score', rows: null, rank: null, err: null, me: null };
 
@@ -991,14 +1043,13 @@ const timerBtn = (act, left, ready, reward) =>
 function vBonus() {
   return `<h2>Бонусы</h2>
   <div class="up main"><div class="h"><b>Ежедневный бонус</b><span>серия ${S.streak}/7</span></div>
-    <p>Заходите регулярно: награда растёт с каждым днём серии. Пропустите больше двух суток — серия сбросится.</p>
+    
     <div class="lv"><i style="width:${S.streak / 7 * 100}%"></i></div>
     ${timerBtn('daily', S.daily_left, 'Забрать бонус', fmt(S.daily_reward))}</div>
   <div class="up"><div class="h"><b>Подработка</b><span>каждые 15 мин</span></div>
-    <p>Быстрый заработок монет. Награда случайная.</p>
+    
     ${timerBtn('work', S.work_left, 'Поработать', S.work_min + '–' + S.work_max)}</div>
-  <div class="up"><div class="h"><b>Бесплатная крутка</b><span>каждые 8 ч</span></div>
-    <p>Находится на вкладке «Призыв». Дубликаты существ тоже возвращают немного монет.</p></div>`;
+  <div class="up"><div class="h"><b>Бесплатная крутка</b><span>каждые 8 ч · «Призыв»</span></div></div>`;
 }
 
 const RTITLE = ['Новичок', 'Искатель', 'Следопыт', 'Призыватель', 'Мастер', 'Легенда', 'Избранный', 'Божество', 'Космос'];
@@ -1008,16 +1059,17 @@ function vMe() {
     : HIST.map(h => { const q = CONF.rar[h.r], it = CONF.pool[q.k][h.c];
       return `<div class="hrow" style="--c:${RC[h.r]}"><span class="hi">${it.i}</span><span class="hn">${esc(it.n)}<small>${q.name}${h.n ? ' · NEW' : ''}${h.f ? ' · бесплатно' : ''}</small></span>
         <span class="ht">${new Date(h.t).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</span></div>`; }).join('');
-  return `<h2>Профиль</h2>
+  return `${updHTML()}<h2>Профиль</h2>
   <div class="up main"><div class="h"><b>${esc(S.name)}</b><span>${RTITLE[Math.max(0, S.best)]}</span></div>
     <div class="stats">
       <div><b>${fmt(S.score)}</b><small>очки</small></div><div><b>${S.uniq}/${CONF.total}</b><small>коллекция</small></div>
       <div><b>${fmt(S.pulls)}</b><small>круток</small></div><div><b>${bestN}</b><small>лучшая редкость</small></div>
       <div><b>${fmt(S.spent)}</b><small>потрачено ${COIN}</small></div><div><b>${S.luck}/30</b><small>удача</small></div></div>
     <div class="inrow"><input class="inp" id="nm" maxlength="16" value="${esc(S.name)}" placeholder="Ваше имя"><button class="btn sm" data-act="rename">Сохранить</button></div></div>
-  <h2 style="font-size:20px">Последние крутки</h2><div id="hist">${hist}</div>
+  <h2 style="font-size:20px">Настройки</h2>${settingsHTML()}
+  <h2 style="font-size:20px;margin-top:18px">Последние крутки</h2><div id="hist">${hist}</div>
   <h2 style="font-size:20px;margin-top:18px">Аккаунт</h2>
-  <div class="up"><p>Вы вошли как <b>@${esc(S.username)}</b>. Прогресс хранится в облачной базе: войдите с тем же логином и паролем на любом телефоне, и всё будет на месте.</p>
+  <div class="up"><p>@${esc(S.username)} · v${APP_VERSION}</p>
     <button class="btn sm" data-act="logout" style="width:100%;justify-content:center">Выйти из аккаунта</button></div>
   <button class="btn sm danger" data-act="reset" style="margin:6px 0 10px">${resetArm ? 'Нажмите ещё раз — всё удалится' : 'Сбросить прогресс'}</button>`;
 }
@@ -1117,6 +1169,7 @@ function showAuth(msg) {
   authEl().classList.add('on');
 }
 function enterGame(j) {
+  Sfx.apply();
   CONF = j.conf; TAB = 'summon'; COL = 0;
   setState(j.state); setAvatar(j.state.name);
   authEl().classList.remove('on');
@@ -1135,7 +1188,7 @@ async function submitAuth() {
   err.textContent = '';
   if (!u || !p) return err.textContent = 'Введите логин и пароль';
   if (AUTH_MODE === 'reg' && p !== $('#ap2').value) return err.textContent = 'Пароли не совпадают';
-  authBusy = true; $('#abtn').classList.add('off');
+  authBusy = true; $('#abtn').classList.add('off'); Sfx.apply();
   try {
     const r = AUTH_MODE === 'reg' ? await Game.register(u, p) : await Game.login(u, p);
     if (r.error) { err.textContent = r.error; return; }
@@ -1159,7 +1212,7 @@ authEl().addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth();
     navigator.serviceWorker.register('sw.js').catch(() => {});
   if (!Cloud.on()) {
     authEl().classList.remove('on');
-    $('#view').innerHTML = '<div class="center">База данных не подключена.<br>Впишите адрес и ключ Supabase в <b>www/config.js</b> (см. README) и пересоберите приложение.</div>';
+    $('#view').innerHTML = '<div class="center">База данных не подключена</div>';
     return;
   }
   if (!Cloud.token()) return showAuth();
