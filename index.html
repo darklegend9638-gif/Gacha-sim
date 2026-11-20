@@ -335,7 +335,7 @@ body.native .tabs{padding-bottom:max(calc(6px + env(safe-area-inset-bottom)),16p
 
 #rate{font:700 11px var(--body);color:#6be3a0;white-space:nowrap}
 
-.tabs{grid-template-columns:repeat(6,minmax(0,1fr));gap:3px;padding-left:4px;padding-right:4px}
+.tabs{grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;padding-left:4px;padding-right:4px}
 .tab{font-size:9.5px}
 
 /* ===== вход / регистрация ===== */
@@ -491,7 +491,6 @@ body.native #admin{padding-top:max(calc(14px + env(safe-area-inset-top)),40px)}
     <button class="tab on" data-act="tab" data-v="summon"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M12 7.5a4.5 4.5 0 0 1 0 9"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg></i>Призыв</button>
     <button class="tab" data-act="tab" data-v="col"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M9 8h5"/></svg></i>Коллекция</button>
     <button class="tab" data-act="tab" data-v="up"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5M5 12l7-7 7 7"/></svg></i>Прокачка</button>
-    <button class="tab" data-act="tab" data-v="bonus"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v8h14v-8M8 8a2.5 2.5 0 1 1 4-2 2.5 2.5 0 1 1 4 2"/></svg></i>Бонусы</button>
     <button class="tab" data-act="tab" data-v="rank"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/></svg></i>Топ</button>
     <button class="tab" data-act="tab" data-v="me"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></i>Профиль</button>
   </nav>
@@ -516,7 +515,7 @@ body.native #admin{padding-top:max(calc(14px + env(safe-area-inset-top)),40px)}
 <div id="toast"></div>
 <script>
 // Подключение к базе Supabase.
-const CLOUD = { url: 'https://xitvrqjblecizhvkwdwc.supabase.co', key: 'sb_publishable_rxfIlv-tVmfx_S9dQvcJPg_Dcfb1NWp' };
+const CLOUD = { url: 'https://fycujrdkxmjtvgnrtgyj.supabase.co', key: 'sb_publishable_Orpln1v4c2Ep1ZQGUIcufQ_AEkd4zBv' };
 
 </script>
 <script>
@@ -1077,7 +1076,7 @@ document.addEventListener('click', e => { const t = e.target.closest('[data-act=
 setTimeout(checkUpdate, 2500); setInterval(checkUpdate, 6 * 3600 * 1000);
 </script>
 <script>
-/* ===== Новые экраны для телефона: Бонусы и Профиль + запуск ===== */
+/* ===== Новые экраны для телефона: Профиль + запуск ===== */
 let HIST = null, resetArm = false, RANK = { b: 'score', rows: null, rank: null, err: null, me: null };
 
 const fmtT = s => { const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), ss = s % 60;
@@ -1086,17 +1085,6 @@ const timerBtn = (act, left, ready, reward) =>
   `<button class="btn ${left > 0 ? 'off' : ''}" data-act="${act}" data-until="${Date.now() + left * 1000}" data-ready="${ready}">
      <span class="lbl">${left > 0 ? fmtT(left) : ready}</span><span>+${reward} ${COIN}</span></button>`;
 
-function vBonus() {
-  return `<h2>Бонусы</h2>
-  <div class="up main"><div class="h"><b>Ежедневный бонус</b><span>серия ${S.streak}/7</span></div>
-    
-    <div class="lv"><i style="width:${S.streak / 7 * 100}%"></i></div>
-    ${timerBtn('daily', S.daily_left, 'Забрать бонус', fmt(S.daily_reward))}</div>
-  <div class="up"><div class="h"><b>Подработка</b><span>каждые 15 мин</span></div>
-    
-    ${timerBtn('work', S.work_left, 'Поработать', S.work_min + '–' + S.work_max)}</div>
-  <div class="up"><div class="h"><b>Бесплатная крутка</b><span>каждые 8 ч · «Призыв»</span></div></div>`;
-}
 
 const ICONS = ['😀','😎','🤩','🥳','😈','👻','🤖','👽','🐱','🐶','🦊','🐼','🐸','🦄','🐲','🦁','🐯','🐵','🦉','🐙','🔥','⚡','🌈','🍀','💎','👑','⭐','🌙','🚀','🎮','🎲','🍕'];
 const myIcon = () => (S && S.icon) || (() => { try { return localStorage.getItem('gachaup_icon_' + (S && S.username)) || ''; } catch (e) { return ''; } })();
@@ -1153,7 +1141,7 @@ async function loadRank() {
 function render() {
   const v = $('#view'); if (!S) return;
   const keep = v.scrollTop, ae = document.activeElement && document.activeElement.id;
-  v.innerHTML = TAB === 'summon' ? vSummon() : TAB === 'col' ? vCol() : TAB === 'up' ? vUp() : TAB === 'bonus' ? vBonus() : TAB === 'rank' ? vRank() : vMe();
+  v.innerHTML = TAB === 'summon' ? vSummon() : TAB === 'col' ? vCol() : TAB === 'up' ? vUp() : TAB === 'rank' ? vRank() : vMe();
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.v === TAB));
   if (TAB !== 'summon') v.scrollTop = keep;
 }
