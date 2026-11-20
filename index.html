@@ -438,6 +438,12 @@ h2{font:900 24px/1.15 var(--disp);letter-spacing:-.03em;margin:8px 0 14px}
 #toast{background:rgba(30,34,86,.95);backdrop-filter:blur(8px);border:1px solid var(--line);box-shadow:0 8px 24px #0008}
 .hrow{border-radius:14px}
 .btn.upd{flex-direction:row;justify-content:space-between;margin-bottom:12px;padding:14px 16px}
+.ava{cursor:pointer;color:inherit}
+.icons{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin:4px 0 12px}
+.ic-b{aspect-ratio:1;border-radius:12px;font-size:20px;background:rgba(255,255,255,.06);border:1px solid var(--line);display:grid;place-items:center}
+.ic-b.on{background:rgba(138,99,255,.35);border-color:#a469ff;box-shadow:0 0 12px #a469ff88}
+.own{display:inline-block;font:800 10px var(--disp);color:#ffd877;background:rgba(255,196,71,.15);border:1px solid rgba(255,196,71,.5);border-radius:99px;padding:2px 7px;vertical-align:middle;margin-left:4px}
+.sheet .up{background:none;border:0;box-shadow:none;padding:0;margin:0}
 </style>
 </head>
 <body>
@@ -445,7 +451,7 @@ h2{font:900 24px/1.15 var(--disp);letter-spacing:-.03em;margin:8px 0 14px}
   <header class="top">
     <div class="logo">Gacha<b>UP</b></div>
     <div class="chip coins"><span><svg class="cn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffcf5c"/><circle cx="12" cy="12" r="6.5" fill="none" stroke="#b8861b" stroke-width="2"/></svg></span><b id="coins">–</b><em id="rate"></em></div>
-    <div class="ava" id="who"></div>
+    <button class="ava" id="who" data-open-settings aria-label="Настройки"></button>
   </header>
   <main id="view"><div class="center">Загрузка…</div></main>
   <nav class="tabs" id="tabs">
@@ -472,6 +478,7 @@ h2{font:900 24px/1.15 var(--disp);letter-spacing:-.03em;margin:8px 0 14px}
     <p class="aerr" id="aerr"></p>
   </div>
 </div>
+<div id="settings" class="sheetwrap"><div class="sheet"><div class="shead"><h2>Настройки</h2><button class="btn sm" data-close-settings>Готово</button></div><div class="sbody"></div></div></div>
 <div id="toast"></div>
 <script>
 // Подключение к базе Supabase.
@@ -664,7 +671,12 @@ function settingsHTML() {
       <button class="btn sm" data-set="reset" style="width:100%;justify-content:center;margin-top:10px">Сбросить настройки</button></div>`;
 }
 (() => {
-  const redraw = () => { if (typeof TAB !== 'undefined' && TAB === 'me' && typeof render === 'function') render(); };
+  const el = document.getElementById('settings');
+  const redraw = () => { el.querySelector('.sbody').innerHTML = settingsHTML(); };
+  document.addEventListener('click', e => {
+    if (e.target === el || e.target.closest('[data-close-settings]')) return el.classList.remove('on');
+    if (e.target.closest('[data-open-settings]')) { redraw(); el.classList.add('on'); }
+  });
   document.addEventListener('click', e => {
     const t = e.target.closest('[data-set],[data-style]'); if (!t) return;
     if (t.dataset.style) { Settings.set('style', t.dataset.style); redraw(); Sfx.restart(); return; }
@@ -999,10 +1011,9 @@ vSummon = function(){
 
 
 function setAvatar(name){
-  const u = tg && tg.initDataUnsafe && tg.initDataUnsafe.user || {}, el = $('#who');
-  const nm = name || u.first_name || '?', ch = String(nm).trim().charAt(0).toUpperCase() || '?';
-  el.textContent = ch;
-  if (u.photo_url) { const im = new Image(); im.alt = ''; im.onload = () => { el.textContent = ''; el.appendChild(im); }; im.src = u.photo_url; }
+  const el = $('#who'), ic = myIcon();
+  el.textContent = ic || String(name || '?').trim().charAt(0).toUpperCase() || '?';
+  el.style.fontSize = ic ? '22px' : '';
 }
 
 
@@ -1052,6 +1063,15 @@ function vBonus() {
   <div class="up"><div class="h"><b>Бесплатная крутка</b><span>каждые 8 ч · «Призыв»</span></div></div>`;
 }
 
+const ICONS = ['😀','😎','🤩','🥳','😈','👻','🤖','👽','🐱','🐶','🦊','🐼','🐸','🦄','🐲','🦁','🐯','🐵','🦉','🐙','🔥','⚡','🌈','🍀','💎','👑','⭐','🌙','🚀','🎮','🎲','🍕'];
+const myIcon = () => (S && S.icon) || (() => { try { return localStorage.getItem('gachaup_icon_' + (S && S.username)) || ''; } catch (e) { return ''; } })();
+const OWN = '👑';
+const badge = o => o ? ' <span class="own">' + OWN + ' владелец</span>' : '';
+async function setIcon(ic) {
+  try { localStorage.setItem('gachaup_icon_' + S.username, ic); } catch (e) {}
+  S.icon = ic; setAvatar(S.name);
+  try { await Cloud.rpc('game_set_icon', { p_icon: ic }); } catch (e) {}
+}
 const RTITLE = ['Новичок', 'Искатель', 'Следопыт', 'Призыватель', 'Мастер', 'Легенда', 'Избранный', 'Божество', 'Космос'];
 function vMe() {
   const bestN = S.best >= 0 ? rname(S.best) : '—';
@@ -1060,14 +1080,14 @@ function vMe() {
       return `<div class="hrow" style="--c:${RC[h.r]}"><span class="hi">${it.i}</span><span class="hn">${esc(it.n)}<small>${q.name}${h.n ? ' · NEW' : ''}${h.f ? ' · бесплатно' : ''}</small></span>
         <span class="ht">${new Date(h.t).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</span></div>`; }).join('');
   return `${updHTML()}<h2>Профиль</h2>
-  <div class="up main"><div class="h"><b>${esc(S.name)}</b><span>${RTITLE[Math.max(0, S.best)]}</span></div>
+  <div class="up main"><div class="h"><b>${esc(S.name)}${badge(S.owner)}</b><span>${RTITLE[Math.max(0, S.best)]}</span></div>
+    <div class="icons">${ICONS.map(i => `<button class="ic-b ${myIcon() === i ? 'on' : ''}" data-act="icon" data-i="${i}">${i}</button>`).join('')}</div>
     <div class="stats">
       <div><b>${fmt(S.score)}</b><small>очки</small></div><div><b>${S.uniq}/${CONF.total}</b><small>коллекция</small></div>
       <div><b>${fmt(S.pulls)}</b><small>круток</small></div><div><b>${bestN}</b><small>лучшая редкость</small></div>
       <div><b>${fmt(S.spent)}</b><small>потрачено ${COIN}</small></div><div><b>${S.luck}/30</b><small>удача</small></div></div>
     <div class="inrow"><input class="inp" id="nm" maxlength="16" value="${esc(S.name)}" placeholder="Ваше имя"><button class="btn sm" data-act="rename">Сохранить</button></div></div>
-  <h2 style="font-size:20px">Настройки</h2>${settingsHTML()}
-  <h2 style="font-size:20px;margin-top:18px">Последние крутки</h2><div id="hist">${hist}</div>
+  <h2 style="font-size:20px">Последние крутки</h2><div id="hist">${hist}</div>
   <h2 style="font-size:20px;margin-top:18px">Аккаунт</h2>
   <div class="up"><p>@${esc(S.username)} · v${APP_VERSION}</p>
     <button class="btn sm" data-act="logout" style="width:100%;justify-content:center">Выйти из аккаунта</button></div>
@@ -1082,7 +1102,7 @@ function vRank() {
   if (RANK.err) body = `<p class="muted" style="text-align:center">${esc(RANK.err)}</p>`;
   else if (!RANK.rows) body = '<p class="muted" style="text-align:center">Загрузка…</p>';
   else body = (RANK.rows.map((r, i) => { const v = val(r);
-      return `<div class="lb ${r.id === RANK.me ? 'me' : ''}"><div class="n">${i + 1}</div><div class="nm">${esc(r.name)}</div><div class="sc">${v[0]}<small>${v[1]}</small></div></div>`; }).join('')
+      return `<div class="lb ${r.id === RANK.me ? 'me' : ''}"><div class="n">${i + 1}</div><div class="nm">${r.icon ? esc(r.icon) + ' ' : ''}${esc(r.name)}${badge(r.owner)}</div><div class="sc">${v[0]}<small>${v[1]}</small></div></div>`; }).join('')
       || '<p class="muted">Пока никого. Станьте первым.</p>')
     + (RANK.rank ? `<p class="muted" style="text-align:center">Ваше место: #${RANK.rank}</p>` : '');
   return `<h2>Топ игроков</h2><div class="rchips">${chips}<button class="rchip" data-act="board" data-b="${RANK.b}">Обновить</button></div>${body}`;
@@ -1137,6 +1157,7 @@ document.addEventListener('click', async e => {
       if (t.classList.contains('off')) return toast('Ещё не готово');
       const j = await api(a); notif('success'); toast('+' + fmt(j.gain) + ' монет'); Sfx.coin(); render();
     }
+    else if (a === 'icon') { await setIcon(t.dataset.i); render(); }
     else if (a === 'rename') { await api('rename', { name: $('#nm').value }); setAvatar(S.name); toast('Имя сохранено'); render(); }
     else if (a === 'logout') { await doLogout(); }
     else if (a === 'reset') {
