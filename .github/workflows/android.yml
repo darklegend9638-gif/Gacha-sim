@@ -38,13 +38,20 @@ jobs:
 
       - name: Иконка и разрешения
         run: |
-          R=android/app/src/main/res
-          rm -rf $R/mipmap-anydpi-v26
-          for d in mdpi:48 hdpi:72 xhdpi:96 xxhdpi:144 xxxhdpi:192; do
-            n=${d%%:*}; s=${d##*:}
-            convert icon-512.png -resize ${s}x${s} $R/mipmap-$n/ic_launcher.png
-            cp $R/mipmap-$n/ic_launcher.png $R/mipmap-$n/ic_launcher_round.png
-          done
+          pip install pillow
+          python3 - <<'PY'
+          from PIL import Image
+          R = 'android/app/src/main/res'
+          import shutil, os
+          shutil.rmtree(R + '/mipmap-anydpi-v26', ignore_errors=True)
+          im = Image.open('icon-512.png').convert('RGBA')
+          for n, s in [('mdpi', 48), ('hdpi', 72), ('xhdpi', 96), ('xxhdpi', 144), ('xxxhdpi', 192)]:
+              d = R + '/mipmap-' + n
+              os.makedirs(d, exist_ok=True)
+              r = im.resize((s, s), Image.LANCZOS)
+              r.save(d + '/ic_launcher.png')
+              r.save(d + '/ic_launcher_round.png')
+          PY
           sed -i '/android.permission.INTERNET/a\    <uses-permission android:name="android.permission.VIBRATE" />' android/app/src/main/AndroidManifest.xml
 
       - name: Постоянный ключ подписи (обновления ставятся поверх)
